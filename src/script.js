@@ -18,7 +18,7 @@ scene.add(mesh)
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height) // fov, aspect
-camera.position.z = 3
+camera.position.z = 2
 scene.add(camera)
 
 // Renderer
