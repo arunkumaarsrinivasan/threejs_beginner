@@ -2,7 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 
 // Canvas
-const canvas = document.getElementById('webgl')
+const canvas = document.querySelector('.webgl')
 
 // Sizes
 const sizes = { width: 800, height: 600 }
