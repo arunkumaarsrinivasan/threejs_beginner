@@ -57,13 +57,10 @@ const axesHelper= new THREE.AxesHelper()
 scene.add(axesHelper)
 
 // Renderer
-const renderer1 = new THREE.WebGLRenderer({ canvas })
-renderer1.setSize(sizes.width, sizes.height)
-renderer1.render(scene, camera)
+const renderer = new THREE.WebGLRenderer({ canvas })
+renderer.setSize(sizes.width, sizes.height)
+renderer.render(scene, camera)
 
-const renderer2 = new THREE.WebGLRenderer({ canvas })
-renderer2.setSize(sizes.width, sizes.height)
-renderer2.render(scene, camera)
 
 
 
