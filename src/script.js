@@ -16,8 +16,8 @@ const scene = new THREE.Scene()
 //group
 const group = new THREE.Group()
 group.position.set( 0, -0.5, 0)
-group.scale.set( 1, 2, 1)
-group.rotation.y=1
+group.scale.set( 1, 1, 1)
+// group.rotation.y=1
 scene.add(group)
 
 const cube1 = new THREE.Mesh(
@@ -45,7 +45,7 @@ group.add(cube3)
 
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height) // fov, aspect
-camera.position.z = 4
+camera.position.z = 6
 scene.add(camera)
 
 //camera look at
@@ -53,8 +53,8 @@ scene.add(camera)
 
 //AxesHelper
 
-const axesHelper= new THREE.AxesHelper()
-scene.add(axesHelper)
+// const axesHelper= new THREE.AxesHelper()
+// scene.add(axesHelper)
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ canvas })
@@ -62,6 +62,26 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.render(scene, camera)
 
 
+//Animate
+
+const clock = new THREE.Clock()
+
+
+const tick = () => {
+
+    const elapsedTime =clock.getElapsedTime()
+
+    group.position.y = Math.sin(elapsedTime)
+    group.position.x = Math.cos(elapsedTime)
+    cube3.rotation.y += 0.05  
+    cube2.rotation.x += 0.05  
+    cube1.rotation.z += 0.05  
+
+    renderer.render(scene, camera)
+
+    window.requestAnimationFrame(tick)
+}
+tick()
 
 
 
