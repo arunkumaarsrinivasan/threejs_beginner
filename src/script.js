@@ -1,7 +1,9 @@
 import './style.css'
 import * as THREE from 'three'
-import gsap from 'gsap'
-import { unique } from 'webpack-merge'
+//import gsap from 'gsap'
+//import { unique } from 'webpack-merge'
+import Stats from 'stats.js'
+
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -15,29 +17,29 @@ const scene = new THREE.Scene()
 
 //group
 const group = new THREE.Group()
-group.position.set( 0, -0.5, 0)
+group.position.set( 0, 0, 0)
 group.scale.set( 1, 1, 1)
 // group.rotation.y=1
 scene.add(group)
 
 const cube1 = new THREE.Mesh(
-    new THREE.BoxGeometry(1,1,1),
+    new THREE.TorusGeometry(10,3,16,5),
     new THREE.MeshBasicMaterial({color: 0xff0000})
 )
 group.add(cube1)
 
 const cube2 = new THREE.Mesh(
-    new THREE.BoxGeometry(1,1,1),
+    new THREE.TorusGeometry(10,3,16,5),
     new THREE.MeshBasicMaterial({color: 0x00ff00})
 )
-cube2.position.x=-2
+// cube2.position.x=-2
 group.add(cube2)
 
 const cube3 = new THREE.Mesh(
-    new THREE.BoxGeometry(1,1,1),
+    new THREE.TorusGeometry(10,3,16,5),
     new THREE.MeshBasicMaterial({color: 0x0000ff})
 )
-cube3.position.x=2
+// cube3.position.x=2
 group.add(cube3)
 
 
@@ -45,7 +47,10 @@ group.add(cube3)
 
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height) // fov, aspect
-camera.position.z = 6
+camera.position.x = 0
+camera.position.y = 0
+camera.position.z = 20
+camera.lookAt(group.position)
 scene.add(camera)
 
 //camera look at
@@ -62,26 +67,48 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.render(scene, camera)
 
 
+//stat
+var stats = new Stats();
+stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild( stats.dom );
+
 //Animate
 
 const clock = new THREE.Clock()
 
+// gsap.to(group.position,{duration:1,delay:1,x:2,yoyo:true,repeat:-1})  //animation using GSAP
+// gsap.to(group.position,{duration:1,delay:2,x:-2,yoyo:true,repeat:-1})
+
+// anime({
+//     targets:['group.position'],
+//     translateX:2,
+//     direction:'alternate',
+//     loop:true,
+//     easing:'easeInOutSine'
+// })
 
 const tick = () => {
 
     const elapsedTime =clock.getElapsedTime()
 
-    group.position.y = Math.sin(elapsedTime)
-    group.position.x = Math.cos(elapsedTime)
-    cube3.rotation.y += 0.05  
-    cube2.rotation.x += 0.05  
-    cube1.rotation.z += 0.05  
+    stats.begin()                                      //stat for 3js animation
+
+    // group.position.y = Math.sin(elapsedTime)
+    // group.position.x = Math.cos(elapsedTime)
+    cube3.rotation.y += 0.01
+    cube2.rotation.x += 0.01  
+    cube1.rotation.z += 0.01 
+    // group.scale.z = Math.tan(elapsedTime)
+    // group.scale.x = Math.sin(elapsedTime)
+    
 
     renderer.render(scene, camera)
 
+    stats.end()
+
     window.requestAnimationFrame(tick)
 }
-tick()
+tick() 
 
 
 
