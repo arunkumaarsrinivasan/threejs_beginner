@@ -3,13 +3,62 @@ import * as THREE from 'three'
 //import gsap from 'gsap'
 //import { unique } from 'webpack-merge'
 import Stats from 'stats.js'
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
+
+
+
+//Cursor
+const cursor = {
+    x:0,
+    y:0
+}
+window.addEventListener('mousemove',(mov)=>{
+    
+    cursor.x= mov.clientX / sizes.width -0.5
+    cursor.y= - (mov.clientY / sizes.height -0.5)
+
+    // console.log(cursor.x, cursor.y)
+
+})
+
+window.addEventListener('resize',()=>
+{
+
+// Update sizes
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+// Update camera
+    camera.aspect= sizes.width / sizes.height
+    camera.updateProjectionMatrix()
+
+// update renderer
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+})
+
+window.addEventListener('dblclick',()=>
+{
+    if(!document.fullscreenElement)
+    {
+        canvas.requestFullscreen()
+    }
+    else
+    {
+        canvas.exitFullscreen()
+    }
+})
 
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
 // Sizes
-const sizes = { width: 800, height: 600 }
+const sizes = { 
+    width: window.innerWidth, 
+    height: window.innerHeight 
+}
 
 // Scene
 const scene = new THREE.Scene()
@@ -23,35 +72,69 @@ group.scale.set( 1, 1, 1)
 scene.add(group)
 
 const cube1 = new THREE.Mesh(
-    new THREE.TorusGeometry(10,3,16,5),
+    new THREE.BoxGeometry(1,1,1,5,5,5),
     new THREE.MeshBasicMaterial({color: 0xff0000})
 )
 group.add(cube1)
 
-const cube2 = new THREE.Mesh(
-    new THREE.TorusGeometry(10,3,16,5),
-    new THREE.MeshBasicMaterial({color: 0x00ff00})
-)
-// cube2.position.x=-2
-group.add(cube2)
+// const cube1 = new THREE.Mesh(
+//     new THREE.TorusGeometry(10,3,16,5),
+//     new THREE.MeshBasicMaterial({color: 0xff0000})
+// )
+// group.add(cube1)
 
-const cube3 = new THREE.Mesh(
-    new THREE.TorusGeometry(10,3,16,5),
-    new THREE.MeshBasicMaterial({color: 0x0000ff})
-)
-// cube3.position.x=2
-group.add(cube3)
+// const cube2 = new THREE.Mesh(
+//     new THREE.TorusGeometry(10,3,16,7),
+//     new THREE.MeshBasicMaterial({color: 0x00ff00})
+// )
+// // cube2.position.x=-2
+// group.add(cube2)
+
+// const cube3 = new THREE.Mesh(
+//     new THREE.TorusGeometry(10,3,16,9),
+//     new THREE.MeshBasicMaterial({color: 0x0000ff})
+// )
+// // cube3.position.x=2
+// group.add(cube3)
 
 
 // Camera
+// const left = -10
+// const right = 10
+// const top = 10
+// const bottom = -10
+const near = 0.1
+const far = 100
+const fov = 75
 
+// const camera = new THREE.OrthographicCamera(
+//     left * aspectRatio,
+//     right * aspectRatio,
+//     top,
+//     bottom,
+//     near,
+//     far
+//     )
 
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height) // fov, aspect
-camera.position.x = 0
-camera.position.y = 0
-camera.position.z = 20
+const aspectRatio = sizes.width / sizes.height
+
+const camera = new THREE.PerspectiveCamera(
+    fov,
+    aspectRatio,
+    near,
+    far
+    ) // fov, aspect
+// camera.position.x = 2
+// camera.position.y = 2
+camera.position.z = 4
 camera.lookAt(group.position)
 scene.add(camera)
+
+const controls = new OrbitControls(camera,canvas)
+// controls.enabled = false
+controls.enableDamping= true
+// controls.target.y= 2
+// controls.update()
 
 //camera look at
 // camera.lookAt(mesh.position)
@@ -64,6 +147,7 @@ scene.add(camera)
 // Renderer
 const renderer = new THREE.WebGLRenderer({ canvas })
 renderer.setSize(sizes.width, sizes.height)
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.render(scene, camera)
 
 
@@ -91,15 +175,22 @@ const tick = () => {
 
     const elapsedTime =clock.getElapsedTime()
 
+    //update Camera
+    // camera.position.x= Math.sin(cursor.x * Math.PI * 2) * 3
+    // camera.position.z= Math.cos(cursor.x * Math.PI * 2) * 3
+    // camera.position.y= cursor.y * 5
+    // camera.lookAt(group.position)
+
     stats.begin()                                      //stat for 3js animation
 
     // group.position.y = Math.sin(elapsedTime)
     // group.position.x = Math.cos(elapsedTime)
-    cube3.rotation.y += 0.01
-    cube2.rotation.x += 0.01  
-    cube1.rotation.z += 0.01 
+    // cube3.rotation.y += 0.01
+    // cube2.rotation.x += 0.01  
+    //cube1.rotation.x += 0.01 
     // group.scale.z = Math.tan(elapsedTime)
     // group.scale.x = Math.sin(elapsedTime)
+    controls.update()
     
 
     renderer.render(scene, camera)
